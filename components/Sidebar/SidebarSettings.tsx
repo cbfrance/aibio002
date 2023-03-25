@@ -14,13 +14,24 @@ interface Props {
   onApiKeyChange: (apiKey: string) => void;
   onClearConversations: () => void;
   onExportConversations: () => void;
-  onImportConversations: (data: { conversations: Conversation[]; folders: ChatFolder[] }) => void;
+  onImportConversations: (data: {
+    conversations: Conversation[];
+    folders: ChatFolder[];
+  }) => void;
 }
 
-export const SidebarSettings: FC<Props> = ({ lightMode, apiKey, onToggleLightMode, onApiKeyChange, onClearConversations, onExportConversations, onImportConversations }) => {
-  const { t} = useTranslation('sidebar')
+export const SidebarSettings: FC<Props> = ({
+  lightMode,
+  apiKey,
+  onToggleLightMode,
+  onApiKeyChange,
+  onClearConversations,
+  onExportConversations,
+  onImportConversations,
+}) => {
+  const { t } = useTranslation("sidebar");
   return (
-    <div className="flex flex-col pt-1 items-center border-t border-white/20 text-sm space-y-1">
+    <div className="flex flex-col items-center pt-1 space-y-1 text-sm border-t border-white/20">
       <ClearConversations onClearConversations={onClearConversations} />
 
       <Import onImport={onImportConversations} />
@@ -31,16 +42,16 @@ export const SidebarSettings: FC<Props> = ({ lightMode, apiKey, onToggleLightMod
         onClick={() => onExportConversations()}
       />
 
-      <SidebarButton
+      {/* <SidebarButton
         text={lightMode === "light" ? t("Dark mode") : t("Light mode")}
         icon={lightMode === "light" ? <IconMoon size={16} /> : <IconSun size={16} />}
         onClick={() => onToggleLightMode(lightMode === "light" ? "dark" : "light")}
-      />
+      /> */}
 
-      <Key
+      {/* <Key
         apiKey={apiKey}
         onApiKeyChange={onApiKeyChange}
-      />
+      /> */}
     </div>
   );
 };
