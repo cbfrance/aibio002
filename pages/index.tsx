@@ -79,9 +79,16 @@ const Home: React.FC<HomeProps> = ({ serverSideApiKeyIsSet }) => {
       setMessageIsStreaming(true);
       setMessageError(false);
 
+      // Remove our expanded prompt tracking for OpenAI
+      const messageHistoryForOpenAI = updatedConversation.messages?.map(
+        (message) => {
+          return { role: message.role, content: message.content };
+        }
+      );
+
       const chatBody: ChatBody = {
         model: updatedConversation.model,
-        messages: updatedConversation.messages,
+        messages: messageHistoryForOpenAI,
         key: apiKey,
         prompt: updatedConversation.prompt,
       };

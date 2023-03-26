@@ -1,6 +1,12 @@
 import { Message, OpenAIModel, OpenAIModelID } from "@/types";
 import { IconPlayerStop, IconRepeat, IconSend } from "@tabler/icons-react";
-import { FC, KeyboardEvent, MutableRefObject, useEffect, useState } from "react";
+import {
+  FC,
+  KeyboardEvent,
+  MutableRefObject,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "next-i18next";
 
 interface Props {
@@ -13,8 +19,16 @@ interface Props {
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
 }
 
-export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSend, onRegenerate, stopConversationRef, textareaRef }) => {
-  const { t } = useTranslation('chat');
+export const ChatInput: FC<Props> = ({
+  messageIsStreaming,
+  model,
+  messages,
+  onSend,
+  onRegenerate,
+  stopConversationRef,
+  textareaRef,
+}) => {
+  const { t } = useTranslation("chat");
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
@@ -23,7 +37,12 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
     const maxLength = model.id === OpenAIModelID.GPT_3_5 ? 12000 : 24000;
 
     if (value.length > maxLength) {
-      alert(t(`Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`, { maxLength, valueLength: value.length }));
+      alert(
+        t(
+          `Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
+          { maxLength, valueLength: value.length }
+        )
+      );
       return;
     }
 
@@ -40,7 +59,7 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
       return;
     }
 
-    onSend({ role: "user", content });
+    onSend({ role: "user", content, expandedContent: "[Expanded]" });
     setContent("");
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
@@ -49,8 +68,10 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
   };
 
   const isMobile = () => {
-    const userAgent = typeof window.navigator === "undefined" ? "" : navigator.userAgent;
-    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+    const userAgent =
+      typeof window.navigator === "undefined" ? "" : navigator.userAgent;
+    const mobileRegex =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
     return mobileRegex.test(userAgent);
   };
 
@@ -67,7 +88,9 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-      textareaRef.current.style.overflow = `${textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"}`;
+      textareaRef.current.style.overflow = `${
+        textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"
+      }`;
     }
   }, [content]);
 
@@ -86,11 +109,8 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
             className="absolute -top-2 md:top-0 left-0 right-0 mx-auto dark:bg-[#343541] border w-fit border-gray-500 py-2 px-4 rounded text-black dark:text-white hover:opacity-50"
             onClick={handleStopConversation}
           >
-            <IconPlayerStop
-              size={16}
-              className="inline-block mb-[2px]"
-            />{" "}
-            {t('Stop Generating')}
+            <IconPlayerStop size={16} className="inline-block mb-[2px]" />{" "}
+            {t("Stop Generating")}
           </button>
         )}
 
@@ -99,10 +119,7 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
             className="absolute -top-2 md:top-0 left-0 right-0 mx-auto dark:bg-[#343541] border w-fit border-gray-500 py-2 px-4 rounded text-black dark:text-white hover:opacity-50"
             onClick={onRegenerate}
           >
-            <IconRepeat
-              size={16}
-              className="inline-block mb-[2px]"
-            />{" "}
+            <IconRepeat size={16} className="inline-block mb-[2px]" />{" "}
             {t("Regenerate response")}
           </button>
         )}
@@ -110,14 +127,18 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
         <div className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-[#40414F] rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <textarea
             ref={textareaRef}
-            className="text-black dark:text-white m-0 w-full resize-none outline-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent pl-2 md:pl-0"
+            className="w-full p-0 pl-2 m-0 text-black bg-transparent border-0 outline-none resize-none dark:text-white pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:pl-0"
             style={{
               resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
               maxHeight: "400px",
-              overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
+              overflow: `${
+                textareaRef.current && textareaRef.current.scrollHeight > 400
+                  ? "auto"
+                  : "hidden"
+              }`,
             }}
-            placeholder={t("Type a message...") || ''}
+            placeholder={t("Type a message...") || ""}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}
@@ -127,26 +148,26 @@ export const ChatInput: FC<Props> = ({ messageIsStreaming, model, messages, onSe
           />
 
           <button
-            className="absolute right-5 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
+            className="absolute p-1 rounded-sm right-5 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200"
             onClick={handleSend}
           >
-            <IconSend
-              size={16}
-              className="opacity-60"
-            />
+            <IconSend size={16} className="opacity-60" />
           </button>
         </div>
       </div>
-      <div className="px-3 pt-2 pb-3 text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
+      <div className="px-3 pt-2 pb-3 text-xs text-center text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
         <a
-          href="https://github.com/mckaywrigley/chatbot-ui"
+          href="https://github.com/cbfrance/aibio002"
           target="_blank"
           rel="noreferrer"
           className="underline"
         >
-          ChatBot UI
+          BioConnect
         </a>
-        . {t("Chatbot UI is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.")}
+        .{" "}
+        {t(
+          "For research purposes only. Made with GPT-4 by OpenAI and ChatUI by @mckaywrigley"
+        )}
       </div>
     </div>
   );

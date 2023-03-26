@@ -13,8 +13,13 @@ interface Props {
   onEditMessage: (message: Message, messageIndex: number) => void;
 }
 
-export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEditMessage }) => {
-  const { t } = useTranslation('chat');
+export const ChatMessage: FC<Props> = ({
+  message,
+  messageIndex,
+  lightMode,
+  onEditMessage,
+}) => {
+  const { t } = useTranslation("chat");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [messageContent, setMessageContent] = useState(message.content);
@@ -27,6 +32,7 @@ export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEdi
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessageContent(event.target.value);
+    alert("modifying prompt");
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -56,13 +62,19 @@ export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEdi
 
   return (
     <div
-      className={`group ${message.role === "assistant" ? "text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 bg-gray-50 dark:bg-[#444654]" : "text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 bg-white dark:bg-[#343541]"}`}
+      className={`group ${
+        message.role === "assistant"
+          ? "text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 bg-gray-50 dark:bg-[#444654]"
+          : "text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 bg-white dark:bg-[#343541]"
+      }`}
       style={{ overflowWrap: "anywhere" }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="text-base gap-4 md:gap-6 md:max-w-2xl lg:max-w-2xl xl:max-w-3xl p-4 md:py-6 flex lg:px-0 m-auto relative">
-        <div className="font-bold min-w-[40px]">{message.role === "assistant" ? t("AI") : t("You")}:</div>
+      <div className="relative flex gap-4 p-4 m-auto text-base md:gap-6 md:max-w-2xl lg:max-w-2xl xl:max-w-3xl md:py-6 lg:px-0">
+        <div className="font-bold min-w-[40px]">
+          {message.role === "assistant" ? t("AI") : t("You")}:
+        </div>
 
         <div className="prose dark:prose-invert mt-[-2px] w-full">
           {message.role === "user" ? (
@@ -81,11 +93,11 @@ export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEdi
                       lineHeight: "inherit",
                       padding: "0",
                       margin: "0",
-                      overflow: "hidden"
+                      overflow: "hidden",
                     }}
                   />
 
-                  <div className="flex mt-10 justify-center space-x-4">
+                  <div className="flex justify-center mt-10 space-x-4">
                     <button
                       className="h-[40px] bg-blue-500 text-white rounded-md px-4 py-1 text-sm font-medium enabled:hover:bg-blue-600 disabled:opacity-50"
                       onClick={handleEditMessage}
@@ -105,11 +117,26 @@ export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEdi
                   </div>
                 </div>
               ) : (
-                <div className="prose dark:prose-invert whitespace-pre-wrap">{message.content}</div>
+                <div>
+                  <div className="prose whitespace-pre-wrap dark:prose-invert">
+                    {message.content}
+                  </div>
+                  <p className="text-gray-500">
+                    {message.expandedContent
+                      ? message.expandedContent
+                      : "[Message was not expanded]"}
+                  </p>
+                </div>
               )}
 
               {(isHovering || window.innerWidth < 640) && !isEditing && (
-                <button className={`absolute ${window.innerWidth < 640 ? "right-3 bottom-1" : "right-[-20px] top-[26px]"}`}>
+                <button
+                  className={`absolute ${
+                    window.innerWidth < 640
+                      ? "right-3 bottom-1"
+                      : "right-[-20px] top-[26px]"
+                  }`}
+                >
                   <IconEdit
                     size={20}
                     className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
@@ -133,23 +160,32 @@ export const ChatMessage: FC<Props> = ({ message, messageIndex, lightMode, onEdi
                       {...props}
                     />
                   ) : (
-                    <code
-                      className={className}
-                      {...props}
-                    >
+                    <code className={className} {...props}>
                       {children}
                     </code>
                   );
                 },
                 table({ children }) {
-                  return <table className="border-collapse border border-black dark:border-white py-1 px-3">{children}</table>;
+                  return (
+                    <table className="px-3 py-1 border border-collapse border-black dark:border-white">
+                      {children}
+                    </table>
+                  );
                 },
                 th({ children }) {
-                  return <th className="border border-black dark:border-white break-words py-1 px-3 bg-gray-500 text-white">{children}</th>;
+                  return (
+                    <th className="px-3 py-1 text-white break-words bg-gray-500 border border-black dark:border-white">
+                      {children}
+                    </th>
+                  );
                 },
                 td({ children }) {
-                  return <td className="border border-black dark:border-white break-words py-1 px-3">{children}</td>;
-                }
+                  return (
+                    <td className="px-3 py-1 break-words border border-black dark:border-white">
+                      {children}
+                    </td>
+                  );
+                },
               }}
             >
               {message.content}
