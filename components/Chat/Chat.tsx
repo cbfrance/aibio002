@@ -109,9 +109,7 @@ export const Chat: FC<Props> = ({
             {t("OpenAI API Key Required")}
           </div>
           <div className="text-center text-gray-500 dark:text-gray-400">
-            {t(
-              "Please set your OpenAI API key in the bottom left of the sidebar."
-            )}
+            {t("Please set your OpenAI API key.")}
           </div>
         </div>
       ) : modelError ? (
@@ -185,10 +183,7 @@ export const Chat: FC<Props> = ({
             messages={conversation.messages}
             model={conversation.model}
             onSend={(message) => {
-              // message includes expanded prompt
-              // { role: "user", content, expandedContent: "[Expanded]" }
               setCurrentMessage(message);
-              // Remove expanded prompt to send it
               onSend(message);
             }}
             onRegenerate={() => {
